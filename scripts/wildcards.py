@@ -19,6 +19,7 @@ class WildcardsScript(scripts.Script):
         return scripts.AlwaysVisible
 
     def replace_wildcard(self, text, gen, d_replacements):
+
         if " " in text or len(text) == 0:
             return text
 
@@ -41,6 +42,9 @@ class WildcardsScript(scripts.Script):
         original_prompt = p.all_prompts[0]
         dict_rep = shared_items.Shared.d_replacements
         gen = random.Random()
+        if p.batch_size==1 and p.seed != -1:
+            gen.seed(p.seed)
+
         i = getattr(p, "_ad_idx", -1) # Image id from after detailer
 
         #TODO: Add support for negatives
@@ -67,7 +71,7 @@ class WildcardsScript(scripts.Script):
                     print("Fixed prompt: ", p.prompt)
 
                 print("Final AD prompt: ", p.prompt)
-                
+
                 p.prompt = "".join(self.replace_wildcard(chunk, gen, {}) for chunk in p.prompt.split("__"))
 
                 # Setting different prompts to the new generated one
